@@ -1,50 +1,66 @@
-class Builders::OrganizationBuilder
+module Builders
+  class OrganizationBuilder
+    include Builders::Builder
 
-  ENTITY_KINDS = [
-    :tax_exempt_organization,
-    :c_corporation,
-    :s_corporation,
-    :partnership,
-    :limited_liability_corporation,
-    :limited_liability_partnership,
-    :household_employer,
-  ]
+    ORGANIZATION_KINDS = [ :general, :exempt, :guest, :plan_design ]
 
-  EXEMPT_ENTITY_KINDS = [
-    :governmental_employer,
-    :foreign_embassy_or_consulate,
-    :health_insurance_exchange,
-  ]
+    def initialize(site, organization_kind, legal_name, entity_kind, options = {})
+      @site                 = site
+      @legal_name           = legal_name
+      @entity_kind          = entity_kind
 
-  def initialize(site, legal_name, entity_kind, options = {})
-    @organization = nil
-    @site         = options[:site] || nil
-    @legal_name   = legal_name
-    @entity_kind  = entity_kind
+      @dba                  = options[:dba] || nil
+      @fein                 = options[:fein] || nil
+      @home_page            = options[:home_page] || nil
+      @agency               = options[:agency] || nil
 
-    @fein         = options[:fein] || nil
-    @home_page    = options[:home_page] || nil
+      @validation_errors    = nil
 
-    @agency       = options[:agency] || nil
-    @divisions    = options[:divisions] || []
+      @organization         = new_organization_instance(organization_kind)
+    end
+
+    def add_profile(new_profile)
+      @organization.profiles << new_profile
+      if new_profile.is_benefit_sponsorship_eligible?
+        @organization.sponsor_benefits_for(new_profile)
+      end
+      @organization
+    end
+
+    def add_division(new_division)
+      @organization.divisions << new_division
+    end
+
+    def add_plan_design_author(profile, new_plan_design_author)
+      if profile.is_benefit_sponsorship_eligible?
+        @organization.plan_design_authors << new_plan_design_author
+      end
+    end
+
+    def validate!
+      @errors = Organizations::OrganizationValidation::SCHEMA.call(@organization)
+    end
+
+    def organization
+      @organization
+    end
+
+    private
+
+    def new_organization_instance(organization_kind)
+      klass = ['Organizations::', organization_kind.to_s.camelcase, 'Organization'].join.constantize
+      klass.new(
+                {
+                    site:         @site,
+                    legal_name:   @legal_name,
+                    entity_kind:  @entity_kind,
+                    dba:          @dba,
+                    fein:         @fein,
+                    home_page:    @home_page,
+                    agency:       @agency,
+                  }
+              )
+    end
 
   end
-
-  def add_profile(new_profile)
-    @profile = new_profile
-  end
-
-  def add_division(new_division)
-    @divisions << new_division
-  end
-
-  def validate_organization
-    Organizations::OrganizationValidation::SCHEMA.(@organization)
-  end
-
-  def organization
-    @organization
-  end
-
-
 end

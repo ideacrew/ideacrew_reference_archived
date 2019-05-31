@@ -1,4 +1,4 @@
 module Events::Organizations
-  class FeinUpdated
+  class FeinUpdated < Events::Event
   end
 end
