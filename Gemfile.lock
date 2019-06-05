@@ -10,9 +10,9 @@ GIT
 
 GIT
   remote: https://github.com/rails/webpacker.git
-  revision: 519a7f597527b57a8a2e142be12dee1df00dc1c2
+  revision: 6cb399bc5599ee60f6a5f2e7788aaba20bd87248
   specs:
-    webpacker (4.0.3)
+    webpacker (4.0.6)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -137,6 +137,8 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
+    fast_jsonapi (1.5)
+      activesupport (>= 4.2)
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -297,6 +299,7 @@ DEPENDENCIES
   database_cleaner (~> 1.7)
   dry-validation (~> 0.13)
   factory_bot_rails (~> 4)
+  fast_jsonapi (~> 1.5)
   globalid (~> 0.4)
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
