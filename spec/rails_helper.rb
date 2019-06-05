@@ -42,4 +42,25 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # set `:type` for events directory
+  config.define_derived_metadata(:file_path => Regexp.new('/spec/events/')) do |metadata|
+    metadata[:type] = :event
+  end
+
+  # set `:type` for policies directory
+  config.define_derived_metadata(:file_path => Regexp.new('/spec/policies/')) do |metadata|
+    metadata[:type] = :policy
+  end
+
+  # set `:type` for serializers directory
+  config.define_derived_metadata(:file_path => Regexp.new('/spec/serializers/')) do |metadata|
+    metadata[:type] = :serializer
+  end
+
+  # set `:type` for services directory
+  config.define_derived_metadata(:file_path => Regexp.new('/spec/services/')) do |metadata|
+    metadata[:type] = :service
+  end
+
 end
