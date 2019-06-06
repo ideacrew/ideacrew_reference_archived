@@ -1,6 +1,9 @@
 class OrganizationSerializer
   include FastJsonapi::ObjectSerializer
 
-  attributes :legal_name, :fein, :dba
+  set_type    :OrganizationSerializer
+  set_id      :hbx_id
+  attributes  :legal_name, :fein, :dba
+  has_many    :profiles
 
 end

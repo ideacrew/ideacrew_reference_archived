@@ -1,25 +1,44 @@
+# Implementation of Event Sourcing Pattern: Application state is a result of sequence of events
+# Based on Philippe Creux project at Kickstarter
+# See: https://www.youtube.com/watch?v=ulF6lEFvrKo&list=PLE7tQUdRKcyaOq3HlRm9h_Q_WhWKqm5xc&index=30
+
 # This is the base Event class that all Events inherit from.
 # It takes care of serializing `data` and `metadata` via json
 # It defines setters and accessors for the defined `data_attributes`
 # After create, it calls `apply` to apply changes.
 
 # class Event < ActiveRecord::Base
-class Events::Event
+class Event
   include Mongoid::Document
   include Mongoid::Timestamps
+  # include FastJsonapi::ObjectSerializer
+
+  # store_in collection: collection_name
+  store_in collection: "organizations_fake_events"
+
+  # belongs_to "#{module_name(self).singularize.downcase}".to_sym,
+  #             class_name: model_class_name,
+  #             auto_save: false
+  belongs_to :organization, class_name: "Organizations::Organization", autosave: false
+
 
   # Subclasses must define the `apply` method.
-  serialize :data, JSON
-  serialize :metadata, JSON
+  # serialize :data, JSON
+  # serialize :metadata, JSON
+
+  field :data,      type: Hash, default: {}
+  field :metadata,  type: Hash, default: {}
 
   before_validation :preset_stream
   before_create     :apply_and_persist
   after_create      :dispatch
 
+  abstract_class = true
 
-  # Not using `created_at` as MySQL timestamps don't include ms.
-  scope :recent_first, -> { reorder('id DESC')}
+  scope :recent_first, ->{ reorder('id DESC') }
 
+  # Metadata examples: info available from controllers
+  # (e.g. submitted_at, user, device, ip)
   after_initialize do
     self.data     ||= {}
     self.metadata ||= {}
@@ -52,10 +71,10 @@ class Events::Event
     public_send "build_#{stream_name}"
   end
 
-  class << self
-    abstract_class = true
 
-    def stream_name
+  # class << self
+
+    def self.stream_name
       inferred_stream = reflect_on_all_associations(:belongs_to).first
       raise "Events must belong to an stream" if inferred_stream.nil?
       inferred_stream.name
@@ -65,8 +84,8 @@ class Events::Event
 
     # Underscored class name by default. ex: "post/updated"
     # Used when sending events to the data pipeline
-    def event_name
-      self.name.sub("Events::", '').underscore
+    def self.event_name
+      self.name.underscore
     end
 
     # Define attributes to be serialized in the `data` column.
@@ -74,12 +93,12 @@ class Events::Event
     #
     # Example:
     #
-    # class MyEvent < Events::Event
+    # class MyEvent < Event
     #   data_attributes :title, :description, :drop_id
     # end
     #
     # MyEvent.create!(
-    def data_attributes(*attrs)
+    def self.data_attributes(*attrs)
       @data_attributes ||= []
 
       attrs.map(&:to_s).each do |attr|
@@ -98,7 +117,7 @@ class Events::Event
 
       @data_attributes
     end
-  end
+  # end
 
 
   private
@@ -111,7 +130,7 @@ class Events::Event
   # Apply the transformation to the stream and save it
   def apply_and_persist
     # Lock! (all good, we're in the ActiveRecord callback chain transaction)
-    stream.lock! if stream.persisted?
+    # stream.lock! if stream.persisted?
 
     # Apply!
     self.stream = apply(stream)
@@ -122,6 +141,6 @@ class Events::Event
   end
 
   def dispatch
-    Events::Dispatcher.dispatch(self)
+    Dispatcher.dispatch(self)
   end
 end

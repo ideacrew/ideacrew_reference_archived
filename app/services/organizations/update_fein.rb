@@ -1,8 +1,21 @@
-module Services::Organizations
+module Organizations
   class UpdateFein
-    include Services::Service
+    include Service
 
-    def call
+    attributes :organization, :fein, :metadata
+
+    private 
+
+    def build_event
+      Event::Organizations::FeinUpdated.new(
+          organization: organization,
+          fein:         fein,
+          metadata:     metadata,
+        )
+    end
+
+    def noop?
+      fein == organization.fein
     end
 
   end

@@ -3,7 +3,6 @@
 
 require 'securerandom'
 
-
 module Organizations
   class Organization
     include Mongoid::Document
@@ -58,11 +57,11 @@ module Organizations
     # the other.  For example:
     # org_a.divisions << org_b  # org_b.agency => org_a
     # org_x.agency = org_y      # org_y.divisions => [org_x]
-    belongs_to  :agency, inverse_of: :divisions, counter_cache: true,
-      class_name: "Organizations::Organization"
+    # belongs_to  :agency, inverse_of: :divisions, counter_cache: true,
+    #   class_name: "Organizations::Organization"
 
-    has_many    :divisions, inverse_of: :agency, autosave: true,
-      class_name: "Organizations::Organization"
+    # has_many    :divisions, inverse_of: :agency, autosave: true,
+    #   class_name: "Organizations::Organization"
 
 
     # PlanDesignOrganization (an Organization subclass) association enables an organization
@@ -88,11 +87,11 @@ module Organizations
 
 
     # Organizations with EmployerProfile and HbxProfile belong to a Site
-    belongs_to  :site, inverse_of: :site_organizations, counter_cache: true,
-      class_name: "Sites::Site"
+    # belongs_to  :site, inverse_of: :site_organizations, counter_cache: true,
+    #   class_name: "Sites::Site"
 
-    belongs_to  :site_owner, inverse_of: :owner_organization,
-      class_name: "Sites::Site"
+    # belongs_to  :site_owner, inverse_of: :owner_organization,
+    #   class_name: "Sites::Site"
 
     embeds_many :profiles,
       class_name: "Profiles::Profile", cascade_callbacks: true
@@ -105,12 +104,12 @@ module Organizations
     accepts_nested_attributes_for :profiles
 
 
-    validates_presence_of :legal_name, :site_id, :profiles
+    # validates_presence_of :legal_name, :site_id #, :profiles
     # validates_presence_of :benefit_sponsorships, if: :is_benefit_sponsor?
 
     before_save  :generate_hbx_id
-    after_update :notify_observers
-    after_create :notify_on_create
+    # after_update :notify_observers
+    # after_create :notify_on_create
 
 
     index({ legal_name: 1 })
