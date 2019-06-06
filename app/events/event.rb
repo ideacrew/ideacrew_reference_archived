@@ -129,9 +129,6 @@ class Event
 
   # Apply the transformation to the stream and save it
   def apply_and_persist
-    # Lock! (all good, we're in the ActiveRecord callback chain transaction)
-    # stream.lock! if stream.persisted?
-
     # Apply!
     self.stream = apply(stream)
 

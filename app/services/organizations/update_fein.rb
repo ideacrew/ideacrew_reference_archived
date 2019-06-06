@@ -7,7 +7,7 @@ module Organizations
     private 
 
     def build_event
-      Event::Organizations::FeinUpdated.new(
+      Organizations::FeinUpdated.new(
           organization: organization,
           fein:         fein,
           metadata:     metadata,
