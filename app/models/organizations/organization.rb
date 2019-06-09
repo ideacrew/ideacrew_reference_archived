@@ -47,9 +47,10 @@ module Organizations
     # Federal Employer ID Number
     field :fein, type: String
 
-    # TODO -- track history on changes
-    # field :updated_by, type: Symbol
-
+    # Track Event Sources for this model
+    # has_many :state_changes, as: :eventable
+    has_many  :state_changes, 
+              class_name: "EventSources::Event"
 
     # Association that enables organizational hierarchies.
     # Organizations may be stored in a tree, with a parent "agency" associated with one or

@@ -1,6 +1,6 @@
 module Organizations
   class Create
-    include Service
+    include EventSources::Command
 
     attributes :site, :legal_name, :entity_kind, :fein, :metadata
 

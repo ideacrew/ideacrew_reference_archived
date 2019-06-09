@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Organizations
-  class Created < Event
+  class Created < OrganizationEvent
 
     data_attributes :fein, :legal_name, :entity_kind #, :hbx_id, :dba, :profiles
 
@@ -17,20 +17,6 @@ module Organizations
       organization
     end
 
-    # private
-    # Extract this class's module namespace and return as String
-    def module_name(konstant)
-      "#{konstant.name.deconstantize}"
-    end
-
-    # Construct a Mongoid collection name
-    def collection_name(module_name)
-      "#{model_class_name(module_name).underscore.gsub('/', '_')}" + "_events"
-    end
-
-    def model_class_name(module_name)
-      "#{module_name.pluralize}" + "::" + "#{module_name.singularize}".camelize
-    end
 
   end
 end

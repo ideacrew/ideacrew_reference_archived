@@ -1,8 +1,8 @@
 module Organizations
   class UpdateFein
-    include Service
+    include EventSources::Command
 
-    attributes :organization, :fein, :metadata
+    attributes :organization, :fein, :metadata #, :slug
 
     private 
 
@@ -11,6 +11,7 @@ module Organizations
           organization: organization,
           fein:         fein,
           metadata:     metadata,
+          # slug: slug,
         )
     end
 
