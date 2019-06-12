@@ -8,7 +8,7 @@ module Organizations
 
     def build_event
       Organizations::FeinUpdated.new(
-          organization: organization,
+          event_stream: organization,
           fein:         fein,
           metadata:     metadata,
           # slug: slug,

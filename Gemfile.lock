@@ -117,6 +117,10 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.2)
       dry-equalizer (~> 0.2)
+    dry-monads (1.2.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 0.4, >= 0.4.4)
+      dry-equalizer
     dry-types (0.14.1)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
@@ -300,6 +304,7 @@ DEPENDENCIES
   capistrano-rails (~> 1.1.6)
   capistrano3-puma
   database_cleaner (~> 1.7)
+  dry-monads (~> 1.2)
   dry-validation (~> 0.13)
   factory_bot_rails (~> 4)
   fast_jsonapi (~> 1.5)

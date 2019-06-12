@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 module Organizations
-  class FeinUpdated < OrganizationEvent
+  class FeinUpdated < EventSources::EventStream
 
-    data_attributes :fein #, :slug
-
+    data_attributes :fein
 
     def apply(organization)
       organization.fein = fein
-      # organization.slug = slug
 
       organization
     end

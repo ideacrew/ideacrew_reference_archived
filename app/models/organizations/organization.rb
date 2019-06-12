@@ -48,9 +48,13 @@ module Organizations
     field :fein, type: String
 
     # Track Event Sources for this model
-    # has_many :state_changes, as: :eventable
-    has_many  :state_changes, 
-              class_name: "EventSources::Event"
+    has_many :events, as: :event_stream , class_name: 'EventSources::EventStream'
+
+    # has_many :state_change_events, as: :poly_eventable,
+    #           class_name: 'Organizations::LocalEvent'
+
+    # has_many  :state_change_events, 
+    #           class_name: "EventSources::OrgEvent"
 
     # Association that enables organizational hierarchies.
     # Organizations may be stored in a tree, with a parent "agency" associated with one or

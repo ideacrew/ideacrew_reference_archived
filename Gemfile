@@ -40,6 +40,7 @@ gem 'mongoid',                  '~> 7.0'
 gem 'globalid',                 '~> 0.4'
 gem 'pundit',                   '~> 2.0'
 gem 'dry-validation',           '~> 0.13'
+gem 'dry-monads',               '~> 1.2'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'

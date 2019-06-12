@@ -29,12 +29,15 @@
 #     end
 #   end
 # ```
+
+require 'dry/monads/result'
+
 module EventSources
   module Command
     extend ActiveSupport::Concern
 
     included do
-      include ActiveModel::Validations
+      include Dry::Monads::Result::Mixin
     end
 
     class_methods do
@@ -69,8 +72,8 @@ module EventSources
 
     def call
       return nil if event.nil?
+      Failure("Event should not be persisted at this stage: #{event}") if event.persisted?
 
-      raise "The event should not be persisted at this stage!" if event.persisted?
       execute!
       event
     end
@@ -84,7 +87,11 @@ module EventSources
     # Save the event. Should not be overwritten by the command as side effects
     # should be implemented via Listeners triggering other Events.
     def execute!
-      event.save!
+      if event.save
+        Success(event)
+      else
+        Failure(event.messages)
+      end
     end
 
     # Returns a new event record or nil if noop
@@ -94,7 +101,7 @@ module EventSources
 
     # Hook to set default values
     def after_initialize
-    # noop
+      # noop
     end
     
   end

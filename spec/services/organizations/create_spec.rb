@@ -37,8 +37,8 @@ RSpec.describe Organizations::Create, type: :service do
         expect(subject.valid?).to be_truthy
       end
 
-      it "and the persisted Organization record should have the corrected FEIN value" do
-        expect(organization_class.find(subject.organization_id).legal_name).to eq legal_name
+      it "and the Source Model record should have persisted" do
+        expect(organization_class.find(subject.source_model.id).legal_name).to eq legal_name
       end
     end
 
